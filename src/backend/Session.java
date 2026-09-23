@@ -33,7 +33,7 @@ public class Session {
         this.sessionName = sessionName;
         this.sessionSpacePath = Path.of(Config.getSessionSpace());
 
-        this.clientPlayer = new Player(clientName, this);
+        this.clientPlayer = new Player(clientName, getPlayerSpacePath());
         isHost = hosting;
 
         this.lobby = new Lobby(this);
@@ -105,14 +105,22 @@ public class Session {
     public void runGame(String gameName, boolean isHost) {
         Game game = games.get(gameName);
         game.initialize(this);
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         game.startGame();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(() -> {
+        while(game.periodic()) {
             lobby.synchronize();
-            if(!game.periodic())
-                scheduler.shutdown();
-        }, 0, 50, TimeUnit.MILLISECONDS);
-        while(!scheduler.isShutdown());
+        }
+        // scheduler.scheduleAtFixedRate(() -> {
+        //     // lobby.synchronize();
+        //     if(!game.periodic())
+        //         scheduler.shutdown();
+        // }, 0, 100, TimeUnit.MILLISECONDS);
+        // while(!scheduler.isShutdown());
         game.endGame();
         if (isHost) {
             host(game.getName());

@@ -8,7 +8,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.LayoutManager;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -19,9 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
 
-import backend.Lobby;
 import backend.publicvars.PublicInt;
 import frontend.WrappingLayout;
 import gameplay.Player;

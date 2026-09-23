@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import backend.Session;
 
@@ -64,34 +63,38 @@ public class GlobalVar<T> {
 
     public Optional<T> getValue() {
         File[] playerFolders = playerSpaceFolder.listFiles();
-        Optional<File>[] values = new Optional[playerFolders.length];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = Optional.of(playerFolders[i]);
+        ArrayList<Optional<File>> values = new ArrayList<>();
+        for (int i = 0; i < playerFolders.length; i++) {
+            values.add(Optional.of(playerFolders[i]));
         }
-        if (values == null || values.length == 0) {
-            // System.out.println("Step 1: null or empty");
-        }
-        for (int i = 0; i < values.length; i++) {
-            File[] content = Path.of(values[i].get().getPath()).resolve("globalvars").resolve(name).toFile().listFiles();
-            if (content.length != 1){
-                // System.out.println("issue at:" + values[i].get().getPath() + "\\globalVars\\" + name);
-                // System.out.println("Possible folders that store the value: " + content.length);
-                values[i] = Optional.empty();
-            }else{
-            values[i] = Optional.of(content[0]);}
+        // if (values == null || values.size() == 0) {
+        // // System.out.println("Step 1: null or empty");
+        // }
+        for (int i = 0; i < values.size(); i++) {
+            File[] content = Path.of(values.get(i).get().getPath()).resolve("globalvars").resolve(name).toFile()
+                    .listFiles();
+            if (content.length != 1) {
+                // System.out.println("issue at:" + values[i].get().getPath() + "\\globalVars\\"
+                // + name);
+                // System.out.println("Possible folders that store the value: " +
+                // content.length);
+                values.set(i, Optional.empty());
+            } else {
+                values.set(i, Optional.of(content[0]));
+            }
         }
         // System.out.println(playerSpaceFolder.listFiles());
         // values = Stream.of(playerSpaceFolder.listFiles())
-        //         .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
-        //         .map(File::new)
-        //         .map((x) -> x.listFiles()[0])
-        //         .toArray(File[]::new);
+        // .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
+        // .map(File::new)
+        // .map((x) -> x.listFiles()[0])
+        // .toArray(File[]::new);
         long newestTime = Long.MIN_VALUE;
         T value = null;
 
         ArrayList<Tag> tags;
         for (Optional<File> opt : values) {
-            if(opt.isEmpty()){
+            if (opt.isEmpty()) {
                 continue;
             }
             File instance = opt.get();
@@ -132,14 +135,15 @@ public class GlobalVar<T> {
 
             File nextFile;
             if (tag.contains(Tag.OVERFLOW.toString())) {
-                nextFile = Path.of(currentParent.getAbsolutePath()).resolve(tag + currentValue.substring(0, MAX_LENGTH - tag.length())).toFile();
+                nextFile = Path.of(currentParent.getAbsolutePath())
+                        .resolve(tag + currentValue.substring(0, MAX_LENGTH - tag.length())).toFile();
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
                 // System.out.println(nextFile.getName());
                 // System.out.println(nextFile.mkdir());
                 nextFile.mkdir();
             } else {
-                nextFile = Path.of(currentParent.getAbsolutePath()).resolve(tag+currentValue).toFile();
+                nextFile = Path.of(currentParent.getAbsolutePath()).resolve(tag + currentValue).toFile();
                 // System.out.println(nextFile.getName());
                 currentValue = "";
                 // System.out.println(nextFile.mkdir());
@@ -150,8 +154,9 @@ public class GlobalVar<T> {
 
     public ArrayList<Tag> getTags(String str) {
         String tagStr = "";
-        try{
-        tagStr = str.substring(str.indexOf("(") + 1, str.indexOf(")"));} catch (Exception e) {
+        try {
+            tagStr = str.substring(str.indexOf("(") + 1, str.indexOf(")"));
+        } catch (Exception e) {
             System.out.println("ERROR W/ TAGS : " + str);
         }
         ArrayList<Tag> tags = new ArrayList<>();
@@ -179,15 +184,16 @@ public class GlobalVar<T> {
         }
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
-            File newFile = Path.of(varFile.getPath()).resolve(tag + value.toString().substring(0, MAX_LENGTH - tag.length())).toFile();
-            if(!newFile.mkdir()){
-                System.out.println("Failed to make folder " +  newFile.getPath());
+            File newFile = Path.of(varFile.getPath())
+                    .resolve(tag + value.toString().substring(0, MAX_LENGTH - tag.length())).toFile();
+            if (!newFile.mkdir()) {
+                System.out.println("Failed to make folder " + newFile.getPath());
             }
             writeOverflow(newFile, value.toString().substring(MAX_LENGTH - tag.length()));
         } else {
             File newFile = Path.of(varFile.getPath()).resolve(tag + (value == null ? "0" : value)).toFile();
-            if(!newFile.mkdir()){
-                System.out.println("Failed to make folder " +  newFile.getPath());
+            if (!newFile.mkdir()) {
+                System.out.println("Failed to make folder " + newFile.getPath());
             }
         }
     }

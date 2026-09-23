@@ -1,16 +1,18 @@
 package gameplay.games.uno;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.SwingUtilities;
 
-import backend.*;
-import gameplay.*;
-import gameplay.games.*;
-import backend.globalvars.*;
-import backend.publicvars.*;
+import backend.Lobby;
+import backend.Session;
+import backend.globalvars.GlobalBoolean;
+import backend.globalvars.GlobalInt;
+import backend.globalvars.GlobalString;
+import backend.globalvars.GlobalVar;
+import backend.publicvars.PublicInt;
+import gameplay.Player;
+import gameplay.games.Game;
 
 enum State {
     WAITING,
@@ -44,12 +46,11 @@ public class Uno extends Game {
 
     private GlobalString winner;
     private State state;
-    private State lastState;
 
     private int safeTurnNum = -1;
 
     public Uno() {
-        setName("Uno");
+        
     }
 
     @Override
@@ -137,13 +138,17 @@ public class Uno extends Game {
         if (hand.size() <= 0) {
             winner.setValue(self.getName());
         }
-        lastState = state;
         return true;
     }
 
     @Override
     public void endGame() {
         uwu.winScreen(winner.getValue().get());
+    }
+
+    @Override
+    public String getName() {
+        return "Uno";
     }
 
     public void syncVars() {

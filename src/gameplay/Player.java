@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
-import backend.Session;
 import backend.publicvars.PublicVar;
 
 public class Player {
-    private final Session session;
 
     private final String name;
 
@@ -21,13 +19,12 @@ public class Player {
 
     private final HashMap<String, PublicVar> publicVars;
 
-    public Player(String name, Session session) {
+    public Player(String name, Path playerSpacePath) {
         this.name = name;
-        this.session = session;
 
         playerFiles = new ArrayList<File>();
 
-        playerFolder = session.getPlayerSpacePath().resolve(name).toFile();
+        playerFolder = playerSpacePath.resolve(name).toFile();
         playerFiles.add(playerFolder);
 
         globalVarsDir = Path.of(playerFolder.getAbsolutePath()).resolve("globalVars").toFile();
@@ -39,9 +36,9 @@ public class Player {
         publicVars = new HashMap<>();
     }
 
-    public static Player fromFile(File playerFile, Session session) {
+    public static Player fromFile(File playerFile, Path playerSpacePath) {
         // Add more functionality when theres more than a name
-        return new Player(playerFile.getName(), session);
+        return new Player(playerFile.getName(), playerSpacePath);
     }
 
     public File[] files() {

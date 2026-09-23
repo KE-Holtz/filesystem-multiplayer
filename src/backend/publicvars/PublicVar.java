@@ -48,7 +48,11 @@ public class PublicVar<T> {
     // ? Returns null if no value is found - is this ok?
 
     public Optional<T> getValue() {
-        String value = varFile.list()[0];
+        String[] varFileContents = varFile.list();
+        if (varFileContents.length == 0) {
+            return Optional.empty();
+        }
+        String value = varFileContents[0];
         // System.out.println(value);
         ArrayList<Tag> tags = getTags(value);
         if (tags.contains(Tag.DEFAULT)) {
@@ -84,7 +88,8 @@ public class PublicVar<T> {
 
             File nextFile;
             if (tag.contains(Tag.OVERFLOW.toString())) {
-                nextFile = Path.of(currentParent.getAbsolutePath()).resolve(tag + currentValue.substring(0, MAX_LENGTH - tag.length())).toFile();
+                nextFile = Path.of(currentParent.getAbsolutePath())
+                        .resolve(tag + currentValue.substring(0, MAX_LENGTH - tag.length())).toFile();
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
                 // System.out.println(nextFile.getName());
@@ -130,7 +135,8 @@ public class PublicVar<T> {
         }
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
-            File newFile = Path.of(varFile.getPath()).resolve(tag + value.toString().substring(0, MAX_LENGTH - tag.length())).toFile();
+            File newFile = Path.of(varFile.getPath())
+                    .resolve(tag + value.toString().substring(0, MAX_LENGTH - tag.length())).toFile();
             newFile.mkdir();
             writeOverflow(newFile, value.toString()
                     .substring(MAX_LENGTH - tag.length()));
@@ -161,7 +167,11 @@ public class PublicVar<T> {
     }
 
     public static PublicVar fromFile(Player player, File file) {
-        String val = file.list()[0];
+        String[] varFileContents = file.list();
+        while (varFileContents.length == 0) {
+            varFileContents = file.list();
+        }
+        String val = varFileContents[0];
         if (getTags(val).contains(Tag.BOOL)) {
             return new PublicBoolean(player, file.getName());
         } else if (getTags(val).contains(Tag.INT)) {

@@ -3,7 +3,6 @@ package backend;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import gameplay.Player;
@@ -23,7 +22,7 @@ public class Lobby {
 
     public void synchronize() {
         for (File playerFile : playerSpacePath.toFile().listFiles()) {
-            Player player = Player.fromFile(playerFile, session);
+            Player player = Player.fromFile(playerFile, session.getPlayerSpacePath());
             if (!players.containsValue(player)) {
                 players.put(player.getName(), player);
             }

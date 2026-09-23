@@ -11,19 +11,11 @@ import backend.Session;
  *
  * It also gives a format for different types of games when creating a new game.
  */
-public abstract class Game {
-
-    private String name;
+public abstract class Game { //TODO: Make an interface
 
     public abstract void initialize(Session session);
     public abstract void startGame();
     public abstract boolean periodic(); //Return false on game end
     public abstract void endGame();
-
-    protected void setName(String name){
-        this.name = name;
-    }
-    public String getName(){
-        return name;
-    }
+    public abstract String getName();
 }

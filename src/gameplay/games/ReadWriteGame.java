@@ -32,7 +32,7 @@ public class ReadWriteGame extends Game {
     private GlobalString globalString;
 
     public ReadWriteGame() {
-        setName("ReadWrite");
+
     }
 
     @Override
@@ -106,6 +106,11 @@ public class ReadWriteGame extends Game {
     @Override
     public void endGame() {
         System.out.println("Ending ReadWrite game");
+    }
+
+    @Override
+    public String getName() {
+        return "Read/Write Game";
     }
 
     // True == failed

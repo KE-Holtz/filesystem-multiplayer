@@ -8,12 +8,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -30,10 +26,12 @@ import backend.Session;
 import frontend.WrappingLayout;
 import gameplay.games.Game;
 import gameplay.games.ReadWriteGame;
+import gameplay.games.hangout.Hangout;
 import gameplay.games.uno.Uno;
 
 public class Main {
     private static JFrame frame = new JFrame();
+
     public static void main(String[] args) {
         Config.init();
 
@@ -158,6 +156,7 @@ public class Main {
         ArrayList<Game> games = new ArrayList<Game>();
         games.add(new ReadWriteGame());
         games.add(new Uno());
+        games.add(new Hangout());
 
         Session session;
         String sessionName;
@@ -314,7 +313,7 @@ public class Main {
 
     public static String encodeString(String s) {
         String delimiter = Config.getDelimiter();
-        if(delimiter.equals("\\")){
+        if (delimiter.equals("\\")) {
             delimiter = "\\\\";
         }
         s = s.replaceAll("#", "#" + "#");
@@ -332,7 +331,7 @@ public class Main {
 
     public static String decodeString(String s) {
         String delimiter = Config.getDelimiter();
-        if(delimiter.equals("\\")){
+        if (delimiter.equals("\\")) {
             delimiter = "\\\\";
         }
         s = s.replaceAll("#" + "#", "#");
